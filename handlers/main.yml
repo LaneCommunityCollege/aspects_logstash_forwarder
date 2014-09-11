@@ -1,0 +1,10 @@
+---
+# handlers file for aspects_logstash_forwarder
+- name: restart logstash-forwarder
+  service: name=logstash-forwarder state=restarted enabled=yes
+
+- name: start logstash-forwarder
+  service: name=logstash-forwarder state=started enabled=yes
+
+- name: stop logstash-forwarder
+  service: name=logstash-forwarder state=stopped enabled=yes

@@ -1,0 +1,121 @@
+---
+# defaults file for aspects_logstash_forwarder
+
+# don't use logstash-forwarder when this is false.
+# like on a logstash indexer.
+aspects_logstash_forwarder_enabled: true
+aspects_logstash_forwarder_run_install: true
+
+aspects_logstash_forwarder_package_name_Debian: "logstash-forwarder_0.3.1_amd64.deb"
+aspects_logstash_forwarder_package_name_RedHat: "logstash-forwarder-0.3.1-1.x86_64.rpm"
+aspects_logstash_forwarder_package_name_Suse: "logstash-forwarder-0.3.1-1.x86_64.rpm"
+
+aspects_logstash_forwarder_package_remote_directory: /tmp
+
+# SSL cert information
+# You have to override these.
+# The path to your client ssl key (optional)
+aspects_logstash_forwarder_cert_key: "/path/to/ssl/private/key"
+# The path to your client ssl certificate (optional)
+aspects_logstash_forwarder_cert_crt: "/path/to/ssl/main/cert"
+# The path to your trusted ssl CA file. This is used
+# to authenticate your downstream server.
+aspects_logstash_forwarder_cert_ca: "/path/to/ssl/cert/authority"
+
+# A dictionary of downstream servers listening for our messages.
+# logstash-forwarder will pick one at random and only switch if
+# the selected one appears to be dead or unresponsive
+# TODO: Fix bug where more than one server, with on disabled, causes
+# an ending comma. Thus invalidating the json.
+aspects_logstash_forwarder_servers:
+#  exampleserver:
+#    use: false
+#    hostname: localhost
+#    port: 5043
+
+# Network timeout in seconds. This is most important for
+# logstash-forwarder determining whether to stop waiting for an
+# acknowledgement from the downstream server. If an timeout is reached,
+# logstash-forwarder will assume the connection or server is bad and
+# will connect to a server chosen at random from the servers list.
+aspects_logstash_forwarder_timeout: 15
+
+# Dictionary of log file locations, and what fields to add to the log message.
+# Just put in the straight JSON syntax.
+aspects_logstash_forwarder_inputs:
+  apache2: |
+    {
+      "paths": [
+        "/var/log/apache2/*.log",
+        "/var/log/httpd/*.log"
+      ],
+      "fields": { "type": "apache" }
+    }
+  auth: |
+    {
+      "paths": [
+        "/var/log/auth.log",
+        "/var/log/secure"
+      ],
+      "fields": { "type": "syslog" }
+    }
+  syslog: |
+    {
+      "paths": [
+        "/var/log/messages",
+        "/var/log/syslog"
+      ],
+      "fields": { "type": "syslog" }
+    }
+  postfix: |
+    {
+      "paths": [
+        "/var/log/mail.err",
+        "/var/log/mail.log",
+        "/var/log/maillog"
+      ],
+      "fields": { "type": "postfix" }
+    }
+  mysql: |
+    {
+      "paths": [
+        "/var/log/mysql.err",
+        "/var/log/mysql.log"
+      ],
+      "fields": { "type": "mysql" }
+    }
+  alternatives: |
+    {
+      "paths": [
+        "/var/log/alternatives.log"
+      ],
+      "fields": { "type": "alternatives" }
+    }
+  fail2ban: |
+    {
+      "paths": [
+        "/var/log/fail2ban.log"
+      ],
+      "fields": { "type": "fail2ban" }
+    }
+  dpkg: |
+    {
+      "paths": [
+        "/var/log/dpkg.log"
+      ],
+      "fields": { "type": "dpkg" }
+    }
+  cron: |
+    {
+      "paths": [
+        "/var/log/cron.log"
+      ],
+      "fields": { "type": "syslog" }
+    }
+  yum: |
+    {
+      "paths": [
+        "/var/log/yum.log"
+      ],
+      "fields": { "type": "syslog" }
+    }

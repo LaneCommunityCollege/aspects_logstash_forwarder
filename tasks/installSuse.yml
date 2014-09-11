@@ -1,0 +1,64 @@
+---
+# install logstash-forwarder
+
+- name: Suse - Check if the remote directory contains the filename.
+  when: ansible_os_family == "Suse"
+  stat: path="{{ aspects_logstash_forwarder_package_remote_directory }}/{{ aspects_logstash_forwarder_package_name_Suse }}"
+  register: remotestatusSuse
+  tags:
+  - aspects_logstash_forwarder
+  - aspects_logstash_forwarder_install
+
+- name: Suse - Install from remote package
+  when: remotestatusSuse is defined and remotestatusSuse.stat.exists
+  zypper:
+    name="{{ aspects_logstash_forwarder_package_remote_directory }}/{{ aspects_logstash_forwarder_package_name_Suse }}"
+    state="present"
+  tags:
+  - aspects_logstash_forwarder
+  - aspects_logstash_forwarder_install
+
+- name: Suse - Upload rpm file when remote does not exist
+  when: remotestatusSuse is defined and remotestatusSuse.stat.exists == false
+  copy:
+    src="downloads/{{ aspects_logstash_forwarder_package_name_Suse }}"
+    dest="/root/{{ aspects_logstash_forwarder_package_name_Suse }}"
+    mode=755
+    owner=root
+    group=root
+  register: uploadedrpmfile
+  tags:
+  - aspects_logstash_forwarder
+  - aspects_logstash_forwarder_install
+
+- name: Suse - Install from uploaded package
+  when: uploadedrpmfile is defined and uploadedrpmfile.state == 'file'
+  zypper:
+    name="{{ uploadedrpmfile.dest }}"
+    state="present"
+  tags:
+  - aspects_logstash_forwarder
+  - aspects_logstash_forwarder_install
+
+- name: Suse - Copy /etc/sysconfig/logstash-forwarder file.
+  copy:
+    src="etc-default-logstash-forwarder.Suse"
+    dest="/etc/sysconfig/logstash-forwarder"
+    mode=644
+    owner=root
+    group=root
+  tags:
+    - aspects_logstash_forwarder
+    - aspects_logstash_forwarder_install
+
+- name: Suse - Copy /etc/init.d/logstash-forwarder file.
+  copy:
+    src="etc-init.d-logstash-forwarder.Suse"
+    dest="/etc/init.d/logstash-forwarder"
+    mode=755
+    owner=root
+    group=root
+  notify: restart logstash-forwarder
+  tags:
+    - aspects_logstash_forwarder
+    - aspects_logstash_forwarder_install

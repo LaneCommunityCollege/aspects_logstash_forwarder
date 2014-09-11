@@ -1,0 +1,47 @@
+---
+# install logstash-forwarder
+
+- name: Debian - Check if the remote directory contains the filename.
+  when: ansible_os_family == "Debian"
+  stat: path="{{ aspects_logstash_forwarder_package_remote_directory }}/{{ aspects_logstash_forwarder_package_name_Debian }}"
+  register: remotestatusdebian
+  tags:
+  - aspects_logstash_forwarder
+  - aspects_logstash_forwarder_install
+
+- name: debug stuff
+  debug: var=remotestatusdebian
+  tags:
+  - aspects_logstash_forwarder
+  - aspects_logstash_forwarder_install
+
+- name: Debian - Install from remote package
+  when: remotestatusdebian is defined and remotestatusdebian.stat.exists
+  apt:
+    deb="{{ aspects_logstash_forwarder_package_remote_directory }}/{{ aspects_logstash_forwarder_package_name_Debian }}"
+    state="installed"
+  tags:
+  - aspects_logstash_forwarder
+  - aspects_logstash_forwarder_install
+
+- name: Debian - Upload deb file when remote does not exist
+  when: remotestatusdebian is defined and remotestatusdebian.stat.exists == false
+  copy:
+    src="downloads/{{ aspects_logstash_forwarder_package_name_Debian }}"
+    dest="/root/{{ aspects_logstash_forwarder_package_name_Debian }}"
+    mode=755
+    owner=root
+    group=root
+  register: uploadeddebfile
+  tags:
+  - aspects_logstash_forwarder
+  - aspects_logstash_forwarder_install
+
+- name: Debian - Install from uploaded package
+  when: uploadeddebfile is defined and uploadeddebfile.state == 'file'
+  apt:
+    deb="{{ uploadeddebfile.dest }}"
+    state="installed"
+  tags:
+  - aspects_logstash_forwarder
+  - aspects_logstash_forwarder_install

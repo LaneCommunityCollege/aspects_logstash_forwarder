@@ -1,0 +1,28 @@
+{
+  "network": {
+    "servers": [
+        {% for server in aspects_logstash_forwarder_servers %}
+        {% if aspects_logstash_forwarder_servers[server].use !=false %}
+          {% if loop.last == False %}
+          "{{ aspects_logstash_forwarder_servers[server].hostname }}:{{ aspects_logstash_forwarder_servers[server].port }}",
+          {% else %}
+          "{{ aspects_logstash_forwarder_servers[server].hostname }}:{{ aspects_logstash_forwarder_servers[server].port }}"
+          {% endif %}
+        {% endif %}
+        {% endfor %}
+    ],
+
+    "ssl certificate": "{{ aspects_logstash_forwarder_cert_crt }}",
+    "ssl key": "{{ aspects_logstash_forwarder_cert_key }}",
+
+    "ssl ca": "{{ aspects_logstash_forwarder_cert_ca }}",
+
+    "timeout": {{ aspects_logstash_forwarder_timeout }}
+  },
+
+  "files": [
+  {% for input in aspects_logstash_forwarder_inputs %}
+  {{ aspects_logstash_forwarder_inputs[input] }}{% if loop.last == False %},{% endif %}
+  {% endfor %}
+  ]
+}

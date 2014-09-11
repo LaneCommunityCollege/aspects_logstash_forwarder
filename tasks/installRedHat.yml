@@ -1,0 +1,47 @@
+---
+# install logstash-forwarder
+
+- name: RedHat - Check if the remote directory contains the filename.
+  when: ansible_os_family == "RedHat"
+  stat: path="{{ aspects_logstash_forwarder_package_remote_directory }}/{{ aspects_logstash_forwarder_package_name_RedHat }}"
+  register: remotestatusRedHat
+  tags:
+  - aspects_logstash_forwarder
+  - aspects_logstash_forwarder_install
+
+- name: debug stuff
+  debug: var=remotestatusRedHat
+  tags:
+  - aspects_logstash_forwarder
+  - aspects_logstash_forwarder_install
+
+- name: RedHat - Install from remote package
+  when: remotestatusRedHat is defined and remotestatusRedHat.stat.exists
+  yum:
+    name="{{ aspects_logstash_forwarder_package_remote_directory }}/{{ aspects_logstash_forwarder_package_name_RedHat }}"
+    state="present"
+  tags:
+  - aspects_logstash_forwarder
+  - aspects_logstash_forwarder_install
+
+- name: RedHat - Upload rpm file when remote does not exist
+  when: remotestatusRedHat is defined and remotestatusRedHat.stat.exists == false
+  copy:
+    src="downloads/{{ aspects_logstash_forwarder_package_name_RedHat }}"
+    dest="/root/{{ aspects_logstash_forwarder_package_name_RedHat }}"
+    mode=755
+    owner=root
+    group=root
+  register: uploadedrpmfile
+  tags:
+  - aspects_logstash_forwarder
+  - aspects_logstash_forwarder_install
+
+- name: RedHat - Install from uploaded package
+  when: uploadedrpmfile is defined and uploadedrpmfile.state == 'file'
+  yum:
+    name="{{ uploadedrpmfile.dest }}"
+    state="present"
+  tags:
+  - aspects_logstash_forwarder
+  - aspects_logstash_forwarder_install

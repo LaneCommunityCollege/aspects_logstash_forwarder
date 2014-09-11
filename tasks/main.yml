@@ -1,0 +1,17 @@
+---
+# tasks file for aspects_logstash_forwarder
+- include: installDebian.yml
+  when: aspects_logstash_forwarder_enabled == true and aspects_logstash_forwarder_run_install == true and ansible_os_family == "Debian"
+
+- include: installRedHat.yml
+  when: aspects_logstash_forwarder_enabled == true and aspects_logstash_forwarder_run_install == true and ansible_os_family == "RedHat"
+
+#- include: installSuse.yml
+#  when: aspects_logstash_forwarder_enabled == true and aspects_logstash_forwarder_run_install == true and ansible_os_family == "Suse"
+
+- name: Set /etc/logstash-forwarder
+  when: aspects_logstash_forwarder_enabled == true
+  template: src=etc-logstash-forwarder.j2 dest=/etc/logstash-forwarder
+  notify: restart logstash-forwarder
+  tags:
+  - aspects_logstash_forwarder
