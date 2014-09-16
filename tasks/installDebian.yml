@@ -9,12 +9,6 @@
   - aspects_logstash_forwarder
   - aspects_logstash_forwarder_install
 
-- name: debug stuff
-  debug: var=remotestatusdebian
-  tags:
-  - aspects_logstash_forwarder
-  - aspects_logstash_forwarder_install
-
 - name: Debian - Install from remote package
   when: remotestatusdebian is defined and remotestatusdebian.stat.exists
   apt:
