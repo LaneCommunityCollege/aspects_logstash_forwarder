@@ -1,10 +1,13 @@
 ---
 # handlers file for aspects_logstash_forwarder
 - name: restart logstash-forwarder
+  when: ansible_os_family != "Suse"
   service: name=logstash-forwarder state=restarted enabled=yes
 
 - name: start logstash-forwarder
+  when: ansible_os_family != "Suse"
   service: name=logstash-forwarder state=started enabled=yes
 
 - name: stop logstash-forwarder
+  when: ansible_os_family != "Suse"
   service: name=logstash-forwarder state=stopped enabled=yes
