@@ -27,7 +27,7 @@ aspects_logstash_forwarder_cert_ca: "/path/to/ssl/cert/authority"
 # the selected one appears to be dead or unresponsive
 # TODO: Fix bug where more than one server, with on disabled, causes
 # an ending comma. Thus invalidating the json.
-aspects_logstash_forwarder_servers:
+aspects_logstash_forwarder_servers: {}
 #  exampleserver:
 #    use: false
 #    hostname: localhost
