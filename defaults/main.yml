@@ -3,8 +3,8 @@
 
 # don't use logstash-forwarder when this is false.
 # like on a logstash indexer.
-aspects_logstash_forwarder_enabled: true
-aspects_logstash_forwarder_run_install: true
+aspects_logstash_forwarder_enabled: False
+aspects_logstash_forwarder_run_install: False
 
 aspects_logstash_forwarder_package_name_Debian: "logstash-forwarder_0.3.1_amd64.deb"
 aspects_logstash_forwarder_package_name_RedHat: "logstash-forwarder-0.3.1-1.x86_64.rpm"
