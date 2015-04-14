@@ -3,7 +3,8 @@
 
 - name: Suse - Check if the remote directory contains the filename.
   when: ansible_os_family == "Suse"
-  stat: path="{{ aspects_logstash_forwarder_package_remote_directory }}/{{ aspects_logstash_forwarder_package_name_Suse }}"
+  stat:
+    path: "{{ aspects_logstash_forwarder_package_remote_directory }}/{{ aspects_logstash_forwarder_package_name_Suse }}"
   register: remotestatusSuse
   tags:
   - aspects_logstash_forwarder
@@ -12,8 +13,8 @@
 - name: Suse - Install from remote package
   when: remotestatusSuse is defined and remotestatusSuse.stat.exists
   zypper:
-    name="{{ aspects_logstash_forwarder_package_remote_directory }}/{{ aspects_logstash_forwarder_package_name_Suse }}"
-    state="present"
+    name: "{{ aspects_logstash_forwarder_package_remote_directory }}/{{ aspects_logstash_forwarder_package_name_Suse }}"
+    state: "present"
   tags:
   - aspects_logstash_forwarder
   - aspects_logstash_forwarder_install

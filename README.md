@@ -8,6 +8,10 @@ Requirements
 
 Set ```hash_behaviour=merge``` in your ansible.cfg file.
 
+If running on Suse, you will need to manage starting and stopping logstash-forwarder yourself. The init script rpm deploys does not work.
+
+I used Monit and an updated version of start-stop-daemon to get it running.
+
 Role Variables
 --------------
 

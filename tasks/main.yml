@@ -1,29 +1,44 @@
 ---
 # tasks file for aspects_logstash_forwarder
 - include: installDebian.yml
-  when: aspects_logstash_forwarder_enabled and
+  when:
+    aspects_logstash_forwarder_enabled and
     aspects_logstash_forwarder_run_install and
     ansible_os_family == "Debian"
+  tags:
+  - aspects_logstash_forwarder
 
 - include: installRedHat.yml
-  when: aspects_logstash_forwarder_enabled and
+  when:
+   aspects_logstash_forwarder_enabled and
    aspects_logstash_forwarder_run_install and
    ansible_os_family == "RedHat"
+  tags:
+  - aspects_logstash_forwarder
 
-#- include: installSuse.yml
-#  when: aspects_logstash_forwarder_enabled == true and aspects_logstash_forwarder_run_install == true and ansible_os_family == "Suse"
+- include: installSuse.yml
+  when:
+    aspects_logstash_forwarder_enabled and
+    aspects_logstash_forwarder_run_install and
+    ansible_os_family == "Suse"
+  tags:
+  - aspects_logstash_forwarder
 
 - name: Set /etc/logstash-forwarder
-  when: aspects_logstash_forwarder_enabled == true
-  template: src=etc-logstash-forwarder.j2 dest=/etc/logstash-forwarder
+  when: aspects_logstash_forwarder_enabled
+  template:
+    src: etc-logstash-forwarder.j2
+    dest: /etc/logstash-forwarder
   notify: restart logstash-forwarder
   tags:
   - aspects_logstash_forwarder
 
 - name: Start logstash-forward after install.
-  when: aspects_logstash_forwarder_enabled and
+  when:
+    aspects_logstash_forwarder_enabled and
     aspects_logstash_forwarder_run_install
-  debug: msg="Starting logstash forwarder after install."
+  debug:
+    msg: "Starting logstash forwarder after install."
   notify: restart logstash-forwarder
   tags:
   - aspects_logstash_forwarder
